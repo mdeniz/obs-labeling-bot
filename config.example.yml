@@ -3,3 +3,11 @@
   :password: mypassword
 :owner: ownername
 :repository: reponame
+:labels_by_commit:
+  api: Frontend
+  webui: Frontend
+  frontend: Frontend
+  doc: Documentation
+  backend: Backend
+  ci: Test Suite
+  dist: Frontend

@@ -21,9 +21,31 @@ class GithubLabelingBot
     pull_request.rels[:commits].get.data
   end
 
+  def tags_in_commits(commits)
+    tags = []
+    commits.each do |commit|
+      matches = commit[:commit][:message].scan(/\[\w+\]/)
+      matches.each do |tag|
+        tags << tag.gsub(/[\[\]]/,'')
+      end
+    end
+    tags.uniq
+  end
+
+  def labels_by_commits(commits)
+    labels = []
+    tags_in_commits(commits).each do |tag|
+      print "#{tag} "
+      labels << @config[:labels_by_commit][tag]
+    end
+    labels.uniq
+  end
+
   def run
     pull_requests.each do |pull_request|
-      puts commits(pull_request).inspect
+      commits = commits(pull_request)
+      labels = labels_by_commits(commits)
+      puts labels.inspect
     end
   end
 
