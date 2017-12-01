@@ -1,6 +1,17 @@
+require 'octokit'
+
 class GithubLabelingBot
 
-  def self.run
+  attr_accessor :config
+  attr_accessor :client
+
+  def initialize(configuration)
+    @config = configuration
+    @client = Octokit::Client.new(config[:credentials])
+  end
+
+  def run
+    puts @client.user.inspect
   end
 
 end
