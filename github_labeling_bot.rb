@@ -44,7 +44,6 @@ class GithubLabelingBot
   def labels_by_commits(commits)
     labels = []
     tags_in_commits(commits).each do |tag|
-      #print "#{tag} "
       labels << @config[:labels_by_commit][tag]
     end
     labels.uniq
@@ -62,22 +61,41 @@ class GithubLabelingBot
   def labels_by_files(files)
     labels = []
     files.map(&:filename).each do |filename|
-      #print "#{filename} "
       labels << tag_by_file(filename)
     end
     labels.uniq
   end
 
-  def run
-    pull_requests.each do |pull_request|
-      print "PR ##{pull_request.number} #{pull_request.title} "
-      commits = commits(pull_request)
-      files = files(pull_request)
-      labels = labels_by_commits(commits)
-      labels += labels_by_files(files)
-      labels = labels.flatten.compact.uniq.sort
-      puts labels.inspect
+  def labels(pull_request)
+    @client.labels_for_issue(repository_name, pull_request.number).map(&:name)
+  end
+
+  def update_labels(pull_request, labels)
+    @client.add_labels_to_an_issue(repository_name, pull_request.number, labels)
+  end
+
+  def update_labels_for_pull_request(pull_request)
+    actual_labels = labels(pull_request)
+    commits = commits(pull_request)
+    files = files(pull_request)
+    labels = labels_by_commits(commits)
+    labels += labels_by_files(files)
+    labels = labels.flatten.compact.uniq.sort
+    puts "\nPR ##{pull_request.number} #{pull_request.title} [#{commits.size} commit/s and #{files.size} file/s]"
+    puts "   >  Actual labels:     #{actual_labels}"
+    puts "   >  Calculated labels: #{labels}"
+    labels -= actual_labels
+    unless labels.empty?
+      puts "   <--  Adding labels:   #{labels}"
+      update_labels(pull_request, labels)
     end
   end
 
+  def run
+    puts "Github Labeling Bot"
+    puts "Adding labels to the PRs on Github repository '#{repository_name}'"
+    pull_requests.each do |pull_request|
+      update_labels_for_pull_request(pull_request)
+    end
+  end
 end
