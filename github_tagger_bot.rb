@@ -1,0 +1,2 @@
+class GithubTaggerBot
+end
