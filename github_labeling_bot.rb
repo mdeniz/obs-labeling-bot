@@ -11,12 +11,20 @@ class GithubLabelingBot
     @repository = @client.repo("#{@config[:owner]}/#{@config[:repository]}")
   end
 
+  # TODO: Use pagination to get all open
   def pull_requests
-    @repository.rels[:pulls]
+    @repository.rels[:pulls].get.data
+  end
+
+  # TODO: Use pagination to get all open
+  def commits(pull_request)
+    pull_request.rels[:commits].get.data
   end
 
   def run
-    puts pull_requests.get(state: 'all').data.inspect
+    pull_requests.each do |pull_request|
+      puts commits(pull_request).inspect
+    end
   end
 
 end
