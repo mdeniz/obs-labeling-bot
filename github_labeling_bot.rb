@@ -7,11 +7,16 @@ class GithubLabelingBot
 
   def initialize(configuration)
     @config = configuration
-    @client = Octokit::Client.new(config[:credentials])
+    @client = Octokit::Client.new(@config[:credentials])
+    @repository = @client.repo("#{@config[:owner]}/#{@config[:repository]}")
+  end
+
+  def pull_requests
+    @repository.rels[:pulls]
   end
 
   def run
-    puts @client.user.inspect
+    puts pull_requests.get(state: 'all').data.inspect
   end
 
 end
