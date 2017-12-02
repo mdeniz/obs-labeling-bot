@@ -3,7 +3,7 @@
 require 'yaml'
 require_relative 'github_labeling_bot'
 
-config = YAML.load_file('config.yml')
+config = YAML.load_file('config/config.yml')
 
 bot = GithubLabelingBot.new(config)
 
