@@ -11,9 +11,9 @@ You can just run the bot script by hand using ruby (after setting up all the env
 ruby bot/runner.rb
 ```
 
-Or you can just use the docker image provided at hub.docker.com (search for **mdeniz/github_labeling_bot**).
+Or you can just use the docker image provided at [hub.docker.com](http://hub.docker.com) (search for **mdeniz/github_labeling_bot**).
 
-Setup first a directory with the config.yml file in it and use that dir path for setting the volume in the docker container.
+Setup first a directory with the `config.yml` file (you can rename the `config.example.yml` provided) in it and use that dir path for setting the volume in the docker container.
 
 See this example for a one execution container:
 ```
